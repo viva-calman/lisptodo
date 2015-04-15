@@ -1,8 +1,18 @@
+;
+; Простая программа для управления ежедневными делами
+;
+;
 (in-package :net.viva-calman.lisptodo)
 
+;
+; Переменные
+;
 (defparameter *today* nil)
 (defvar *current-id*)
 
+;
+; Классы
+;
 (defclass todoentry ()
   ((id :accessor id
        :initform (+ *current-id* 1)
@@ -25,8 +35,16 @@
 		     :initform (create-today-timeline)
 		     :documentation "Массив с текущим списком дел")))
 
+;
+; Обобщенные функции
+;
 
+;
+; Методы
+;
 
-
+;
+; Функции
+;
    
   
