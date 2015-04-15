@@ -32,12 +32,18 @@
 	       :documentation "Текущий номер записи в файле")
    (current-todo :initarg :current-todo
 		     :accessor current-todo
-		     :initform (create-today-timeline)
+		     :initform nil
 		     :documentation "Массив с текущим списком дел")))
 
 ;
 ; Обобщенные функции
 ;
+
+(defgeneric add-new-do ((todolist todolist)
+			title)
+  (:documentation "Добавление новой записи"))
+
+		      
 
 ;
 ; Методы
@@ -46,5 +52,5 @@
 ;
 ; Функции
 ;
-   
+
   
