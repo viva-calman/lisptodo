@@ -8,14 +8,14 @@
 ;;; Переменные
 ;;;
 (defparameter *today* nil)
-(defvar *current-id*)
 
 ;;;
 ;;; Классы
 ;;;
 (defclass todoentry ()
-  ((id :accessor id
-       :initform (+ *current-id* 1)
+  ((id :initarg :id
+       :accessor id
+       :initform 0
        :documentation "ID записи")
    (title :initarg :title
 	  :accessor title
@@ -75,7 +75,8 @@
   ;;Добавление новой записи
   (with-accessors ((current-id current-id)
 		   (current-todo current-todo)) todolist
-    (push (make-instance 'todoentry :title title) current-todo)))
+    (setf current-id (+ current-id 1))
+    (push (list :id current-id :obj (make-instance 'todoentry :title title :id current-id)) current-todo)))
 		   
 ;;;
 ;;; Функции
@@ -88,5 +89,5 @@
   
 
 (defun init-current-todo ()
-  ;; Инициализация пустого списка дел
+  ;; Инициализация пустого списка делo
   (setf *today* (make-instance 'todolist)))
