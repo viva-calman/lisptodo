@@ -1,18 +1,18 @@
-;
-; Простая программа для управления ежедневными делами
-;
-;
+;;;;
+;;;; Простая программа для управления ежедневными делами
+;;;;
+;;;;
 (in-package :net.viva-calman.lisptodo)
 
-;
-; Переменные
-;
+;;;
+;;; Переменные
+;;;
 (defparameter *today* nil)
 (defvar *current-id*)
 
-;
-; Классы
-;
+;;;
+;;; Классы
+;;;
 (defclass todoentry ()
   ((id :accessor id
        :initform (+ *current-id* 1)
@@ -35,43 +35,58 @@
 		     :initform nil
 		     :documentation "Массив с текущим списком дел")))
 
-;
-; Обобщенные функции
-;
+;;;
+;;; Обобщенные функции
+;;;
 
-;
-; Добавление новой записи
 (defgeneric add-new-do (todolist
 			title)
+  ;; Добавление новой записи
   (:documentation "Добавление новой записи"))
 
-;
-; Обновление текущего номера записи в файле
+
 (defgeneric update-current-id (todolist)
+  ;; Обновление текущего номера записи в файле
   (:documentation "Обновление текущего id записи, для поддержания актуальности данных в объекте")
 			       
-;
-; Отображение списка дел
+
+
 (defgeneric show-todolist (todolist
 			   mode)
+  ;; Отображение списка дел
   (:documentation "Отображение списка дел. Режим определяет, отображаются все дела или только невыполненные"))
-;
-; Изменение статуса записи
+
 (defgeneric change-status (todoentry
 			   id
 			   status)
+  ;; Изменение статуса записи
   (:documentation "Изменение статуса записи. 
 0 - не выполнено, 
 1 - выполнено, 
 2 - удалено. Удаленные записи не отображаются при выводе, но сохраняются в объекте до вызова функции чистки"))
 
 
-;
-; Методы
-;
 
-;
-; Функции
-;
-
+;;;
+;;; Методы
+;;;
+(defmethod add-new-do ((todolist todolist)
+		       title)
+  ;;Добавление новой записи
+  (with-accessors ((current-id current-id)
+		   (current-todo current-todo)) todolist
+    (push (make-instance 'todoentry :title title) current-todo)))
+		   
+;;;
+;;; Функции
+;;;
+(defun get-current-date ()
+  ;; Получение дня, месяца и года на текущий момент
+  (multiple-value-bind (second minute hour date month year day-of-week dst-p tz)
+      (get-decoded-time)
+    (list date month year)))
   
+
+(defun init-current-todo ()
+  ;; Инициализация пустого списка дел
+  (setf *today* (make-instance 'todolist)))
