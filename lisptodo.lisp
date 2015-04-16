@@ -23,7 +23,7 @@
 	  :documentation "Название записи")
    (status :initarg :status
 	   :accessor status
-	   :initform nil
+	   :initform 0
 	   :documentation "Статус выполнения задачи")))
 
 (defclass todolist ()
@@ -68,6 +68,16 @@
   ;;Отображение записи
   (:documentation "Отображение отдельной записи"))
 
+(defgeneric show-all-entries (todolist
+			      mode)
+  ;; Вывод всех записей списка
+  (:documentation "Вывод всех записей списка, в разных режимах")
+
+(defgeneric select-entry-by-id (todolist
+				id)
+  ;; Вывод записи по заданному id
+  (:documentation "Вывод записи по заданному id"))
+
 ;;;
 ;;; Методы
 ;;;
@@ -91,7 +101,22 @@
 	       (title title)
 	       (status status)) todoentry
     (list id title status)))
-		   
+
+(defmethod show-all-entries ((todolist todolist)
+			     mode)
+  ;; Возвращаем все записи в текущем списке, режим задает, отображается ли список полностью 
+  ;; или только выполненные/не выполненные записи
+  (with-slots ((current-todo current-todo)) todolist
+    (cond 
+      ((= mode 0)
+       (loop for i in current-todo collect (show-todo-entry (getf i :obj))))
+      ((= mode 1)
+       (remove-if-not #'(lambda (x) (= (third x) 1))(loop for i in current-todo collect (show-todo-entry (getf i :obj)))))
+      (t 
+       (remove-if-not #'(lambda (x) (= (third x) 0))(loop for i in current-todo collect (show-todo-entry (getf i :obj))))))))
+
+
+
 ;;;
 ;;; Функции
 ;;;
