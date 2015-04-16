@@ -57,7 +57,6 @@
   (:documentation "Отображение списка дел. Режим определяет, отображаются все дела или только невыполненные"))
 
 (defgeneric change-status (todoentry
-			   id
 			   status)
   ;; Изменение статуса записи
   (:documentation "Изменение статуса записи. 
@@ -65,7 +64,9 @@
 1 - выполнено, 
 2 - удалено. Удаленные записи не отображаются при выводе, но сохраняются в объекте до вызова функции чистки"))
 
-
+(defgeneric show-todo-entry (todoentry)
+  ;;Отображение записи
+  (:documentation "Отображение отдельной записи"))
 
 ;;;
 ;;; Методы
@@ -77,6 +78,19 @@
 		   (current-todo current-todo)) todolist
     (setf current-id (+ current-id 1))
     (push (list :id current-id :obj (make-instance 'todoentry :title title :id current-id)) current-todo)))
+
+(defmethod change-status ((todoentry todoentry)
+			  stat-val)
+  ;; Изменение статуса записи
+  (with-accessors ((status status)) todoentry
+    (setf status stat-val)))
+
+(defmethod show-todo-entry ((todoentry todoentry))
+  ;; Возвращает список с содержимым отдельной записи
+  (with-slots ((id id)
+	       (title title)
+	       (status status)) todoentry
+    (list id title status)))
 		   
 ;;;
 ;;; Функции
