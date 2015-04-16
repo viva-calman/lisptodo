@@ -111,9 +111,17 @@
       ((= mode 0)
        (loop for i in current-todo collect (show-todo-entry (getf i :obj))))
       ((= mode 1)
-       (remove-if-not #'(lambda (x) (= (third x) 1))(loop for i in current-todo collect (show-todo-entry (getf i :obj)))))
+       (remove-if-not #'(lambda (x) (= (third x) 1))
+		      (loop for i in current-todo collect (show-todo-entry (getf i :obj)))))
       (t 
-       (remove-if-not #'(lambda (x) (= (third x) 0))(loop for i in current-todo collect (show-todo-entry (getf i :obj))))))))
+       (remove-if-not #'(lambda (x) (= (third x) 0))
+		      (loop for i in current-todo collect (show-todo-entry (getf i :obj))))))))
+
+(defmethod select-entry-by-id ((todolist todolist)
+			       id)
+  ;; Выбор записи по указанному id. Возвращает объект
+  (with-slots ((current-todo current-todo)) todolist
+    (first (remove-if-not #'(lambda (x) (= id (getf x :id))) current-todo))))
 
 
 
