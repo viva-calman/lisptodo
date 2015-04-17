@@ -86,7 +86,7 @@
 
 (defgeneric write-today (todolist)
   ;; Преобразование объекта в lisp-форму, пригодную для сохранения
-  (:documentation "Преобразуем объект в lisp-форму")
+  (:documentation "Преобразуем объект в lisp-форму"))
 
 ;;;
 ;;; Методы
