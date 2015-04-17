@@ -4,12 +4,16 @@
 ;;;;
 (in-package :net.viva-calman.lisptodo)
 
+
+
 ;;;
 ;;; Переменные
 ;;;
 (defparameter *today* nil)
 (defparameter *tomorrow* (date-to-string (get-current-date)))
 (defparameter *filename* nil)
+
+
 
 ;;;
 ;;; Классы
@@ -88,6 +92,16 @@
   ;; Преобразование объекта в lisp-форму, пригодную для сохранения
   (:documentation "Преобразуем объект в lisp-форму"))
 
+(defgeneric deserialize-todo (todoentry)
+  ;; Преобразование отдельной записи в lisp-форму
+  (:documentation "Преобразование отдельной записи в lisp-форму"))
+
+(defgeneric serialize-todo (todoentry)
+  ;; Преобразование lisp-формы в объект todoentry
+  (:documentation "Преобразование lisp-формы в объект"))
+
+
+
 ;;;
 ;;; Методы
 ;;;
@@ -133,6 +147,11 @@
   (with-slots ((current-todo current-todo)) todolist
     (first (remove-if-not #'(lambda (x) (= id (getf x :id))) current-todo))))
 
+(defmethod write-todo ((todolist todolist))
+  ;; Преобразование списка дел в lisp-форму
+  (with-slots ((current-id current-id)
+	       (current-todo current-todo)) todolist
+    )
 
 
 ;;;
