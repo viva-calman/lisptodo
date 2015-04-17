@@ -8,6 +8,8 @@
 ;;; Переменные
 ;;;
 (defparameter *today* nil)
+(defparameter *tomorrow* (date-to-string (get-current-date)))
+(defparameter *filename* nil)
 
 ;;;
 ;;; Классы
@@ -131,8 +133,13 @@
 (defun get-current-date ()
   ;; Получение дня, месяца и года на текущий момент
   (multiple-value-bind (second minute hour date month year day-of-week dst-p tz)
-      (get-decoded-time)
-    (list date month year)))
+      (decode-universal-time (+ (get-universal-time) (* 3600 24)))
+    (if (< month 10)
+	(setf hour (concatenate 'string (write-to-string 0) (write-to-string month)))
+	(setf hour (write-to-string month)))
+    (list (write-to-string date) 
+	  hour 
+	  (write-to-string year))))
 
 (defun init-current-todo ()
   ;; Инициализация пустого списка дел
@@ -150,6 +157,12 @@
 
 (defun date-to-string (date)
   ;; Принимает список и возвращает строку
+  (let (month)
+    (if (< (parce-integer (second date)) 10)
+	(setf month (concatenate 'string (write-to-string 0) (second date)))
+	(setf month (second date)))
+    (concatenate 'string 
+		 (third date) "-" month "-" (first date))
 )
 
 (defun read-input (prompt)
@@ -157,3 +170,19 @@
   (format *query-io* "~a: " prompt)
   (force-output *query-io*)
   (read-line *query-io*))
+
+(defun write-new-todo (todo)
+  ;; Сохранение новой записи
+  (with-open-file (out todo
+                   :direction :output
+                   :if-exists :supersede)
+    (with-standard-io-syntax
+      (print (write-today *today*) out))))
+
+(defun load-todo (filename)
+  ;; Загрузка записи
+  (with-open-file (in filename)
+    (with-standard-io-syntax
+      (setf *today* (read-today (read in))))))
+
+
