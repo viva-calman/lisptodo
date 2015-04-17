@@ -133,8 +133,27 @@
   (multiple-value-bind (second minute hour date month year day-of-week dst-p tz)
       (get-decoded-time)
     (list date month year)))
-  
 
 (defun init-current-todo ()
-  ;; Инициализация пустого списка делo
+  ;; Инициализация пустого списка дел
   (setf *today* (make-instance 'todolist)))
+
+(defun print-list (todo-list)
+  ;; Отображение списка
+  (format t "~{~{~a:~10t~a~t~a~%~}~}~%" todo-list))
+
+(defun date-select ()
+  ;; Принимает пользовательский ввод и возвращает список с датой
+  (list (read-input "День")
+	(read-input "Месяц")
+	(read-input "Год")))
+
+(defun date-to-string (date)
+  ;; Принимает список и возвращает строку
+)
+
+(defun read-input (prompt)
+  ;; Чтение пользовательского ввода
+  (format *query-io* "~a: " prompt)
+  (force-output *query-io*)
+  (read-line *query-io*))
