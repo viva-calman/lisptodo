@@ -80,6 +80,14 @@
   ;; Вывод записи по заданному id
   (:documentation "Вывод записи по заданному id"))
 
+(defgeneric read-today (todolist)
+  ;; Превращение lisp-формы в объект
+  (:documentation "Преобразуем lisp-форму"))
+
+(defgeneric write-today (todolist)
+  ;; Преобразование объекта в lisp-форму, пригодную для сохранения
+  (:documentation "Преобразуем объект в lisp-форму")
+
 ;;;
 ;;; Методы
 ;;;
