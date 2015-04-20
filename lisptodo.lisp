@@ -33,7 +33,8 @@
 	   :documentation "Статус выполнения задачи")))
 
 (defclass todolist ()
-  ((current-id :accessor current-id
+  ((current-id :initarg :current-id
+	       :accessor current-id
 	       :initform 0
 	       :documentation "Текущий номер записи в файле")
    (current-todo :initarg :current-todo
@@ -147,12 +148,20 @@
   (with-slots ((current-todo current-todo)) todolist
     (first (remove-if-not #'(lambda (x) (= id (getf x :id))) current-todo))))
 
-(defmethod write-todo ((todolist todolist))
+(defmethod write-today ((todolist todolist))
   ;; Преобразование списка дел в lisp-форму
   (with-slots ((current-id current-id)
 	       (current-todo current-todo)) todolist
-    )
+    (list current-id (loop for i in current-todo collect (parce-todo i)))))
 
+(defmethod deserialize-todo ((todoentry todoentry))
+  ;; Преобразование отдельной todo-записи в lisp-форму.
+  (with-slots ((id id)
+	       (title title)
+	       (status status)) todoentry
+    (list id title status)))
+	       
+			     
 
 ;;;
 ;;; Функции
@@ -212,4 +221,7 @@
     (with-standard-io-syntax
       (setf *today* (read-today (read in))))))
 
+(defun parce-todo (todo)
+  ;; Разбивка todo
+  (list (getf todo :id) (deserialize-todo (getf todo :obj))))
 
