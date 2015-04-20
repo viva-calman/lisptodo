@@ -208,7 +208,7 @@
   ;; Загрузка записи
   (with-open-file (in filename)
     (with-standard-io-syntax
-      (setf *today* (read-today (read in))))))
+      (setf *today* (serialize-today (read in))))))
 
 (defun parce-todo (todo)
   ;; Разбивка todo
