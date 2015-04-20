@@ -85,10 +85,6 @@
   ;; Вывод записи по заданному id
   (:documentation "Вывод записи по заданному id"))
 
-(defgeneric read-today (todolist)
-  ;; Превращение lisp-формы в объект
-  (:documentation "Преобразуем lisp-форму"))
-
 (defgeneric write-today (todolist)
   ;; Преобразование объекта в lisp-форму, пригодную для сохранения
   (:documentation "Преобразуем объект в lisp-форму"))
@@ -96,12 +92,6 @@
 (defgeneric deserialize-todo (todoentry)
   ;; Преобразование отдельной записи в lisp-форму
   (:documentation "Преобразование отдельной записи в lisp-форму"))
-
-(defgeneric serialize-todo (todoentry)
-  ;; Преобразование lisp-формы в объект todoentry
-  (:documentation "Преобразование lisp-формы в объект"))
-
-
 
 ;;;
 ;;; Методы
@@ -159,8 +149,7 @@
   (with-slots ((id id)
 	       (title title)
 	       (status status)) todoentry
-    (list id title status)))
-	       
+    (list id title status)))      
 			     
 
 ;;;
