@@ -216,12 +216,15 @@
 
 (defun serialize-today (today)
   ;; Превращение lisp-формы в объект todolist
-  (make-instance 'todolist :current-id (first today) :current-todo (serialize-todo (second today))))
+  (make-instance 'todolist 
+		 :current-id (first today) 
+		 :current-todo (serialize-todo (second today))))
 
 (defun serialize-todo (todo)
   ;; Преобразуем lisp-форму todo в соответствующий объект
-  (loop for i in todo collect (list :id (first i) :obj (make-instance 'todoentry 
-								      :id (first (second i)) 
-								      :title (second (second i)) 
-								      :status (third (second i))))))
+  (loop for i in todo collect (list :id (first i) 
+				    :obj (make-instance 'todoentry 
+							:id (first (second i)) 
+							:title (second (second i)) 
+							:status (third (second i))))))
 
