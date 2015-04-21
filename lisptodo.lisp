@@ -183,12 +183,11 @@
 (defun date-to-string (date)
   ;; Принимает список и возвращает строку
   (let (month)
-    (if (< (parce-integer (second date)) 10)
+    (if (< (parse-integer (second date)) 10)
 	(setf month (concatenate 'string (write-to-string 0) (second date)))
 	(setf month (second date)))
     (concatenate 'string 
-		 (third date) "-" month "-" (first date))
-)
+		 (third date) "-" month "-" (first date))))
 
 (defun read-input (prompt)
   ;; Чтение пользовательского ввода
@@ -228,3 +227,33 @@
 							:title (second (second i)) 
 							:status (third (second i))))))
 
+;;
+;; Функции пользовательского интерфейса
+;;
+(defun user-interface ()
+  ;; Основной CLI-интерфейс
+  (format t "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo~%")
+  (let (ans (parse-integer (read-input ">")))
+    (cond 
+      ((= 1 ans))
+      ((= 2 ans))
+)))
+
+	
+(defun open-todo ()
+  ;; Функция предоставляющая интерфейс для выбора действия с существующими файлами
+  (format t "По умолчанию загрузится сегодняшний todo
+введите 1, для того, чтобы открыть todo на завтра
+введите 2, чтобы открыть todo по заданной дате")
+  (let ((ans (parse-integer (read-input ">"))))
+    (cond
+      ((= 1 ans)
+       (load-tomorrow))
+      ((= 2 ans)
+       (load-date))
+      (t (load-today))))))
+       
+(defun load-today ()
+  ;; Загрузка сегодняшнего todo
+)
+      
