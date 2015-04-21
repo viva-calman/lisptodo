@@ -159,12 +159,11 @@
   ;; Получение дня, месяца и года на текущий момент
   (multiple-value-bind (second minute hour date month year day-of-week dst-p tz)
       (decode-universal-time (+ (get-universal-time) offset))
-    (if (< month 10)
-	(setf hour (concatenate 'string (write-to-string 0) (write-to-string month)))
-	(setf hour (write-to-string month)))
     (list (write-to-string date) 
-	  hour 
-	  (write-to-string year))))
+	  (write-to-string month) 
+	  (write-to-string year)
+	  hour
+	  minute)))
 
 (defun init-current-todo ()
   ;; Инициализация пустого списка дел
@@ -255,6 +254,9 @@
        
 (defun load-today ()
   ;; Загрузка сегодняшнего todo
-  (let ((today (
-)
+  (let ((today (get-current-date 0)))
+    (if (and (> (fourth today) 23) (> (fifth today) 50))
+	(format t "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним~%"))
+    (load-todo (date-to-string today))))
+
       
