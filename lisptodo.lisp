@@ -155,10 +155,10 @@
 ;;;
 ;;; Функции
 ;;;
-(defun get-current-date ()
+(defun get-current-date (&optional (offset (* 3600 24)))
   ;; Получение дня, месяца и года на текущий момент
   (multiple-value-bind (second minute hour date month year day-of-week dst-p tz)
-      (decode-universal-time (+ (get-universal-time) (* 3600 24)))
+      (decode-universal-time (+ (get-universal-time) offset))
     (if (< month 10)
 	(setf hour (concatenate 'string (write-to-string 0) (write-to-string month)))
 	(setf hour (write-to-string month)))
@@ -255,5 +255,6 @@
        
 (defun load-today ()
   ;; Загрузка сегодняшнего todo
+  (let ((today (
 )
       
