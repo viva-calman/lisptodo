@@ -283,8 +283,14 @@
   (format t "По умолчанию выводится список целиком.
 Для фильтрации записей введите:
 1 - Только невыполненные
-2 - Тольуо выполненные")
-  (let ((ans (parse-integer (read-input ">")))))
+2 - Только выполненные~%~%")
+  (let ((ans (parse-integer (read-input ">"))))
+    (cond
+      ((= ans 1)
+       (print-list (show-all-entries *today* 2)))
+      ((= ans 2)
+       (print-list (show-all-entries *today* 1)))
+      (t (print-list (show-all-entries *today* 0))))))
     
   
 
