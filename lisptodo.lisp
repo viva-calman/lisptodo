@@ -257,6 +257,17 @@
   (let ((today (get-current-date 0)))
     (if (and (> (fourth today) 23) (> (fifth today) 50))
 	(format t "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним~%"))
-    (load-todo (date-to-string today))))
+    (load-todo (date-to-string today))
+    (select-action ())
+    (format t "todo загружен~%")))
+
+(defun select-action ()
+  ;; Выбор действия, производимого с загруженным todo
+  (format t "Выбор действия :)
+1 - Добавление новой записи в текущий todo
+2 - Просмотр загруженного todo
+3 - Изменение статуса записи
+4 - Сохранение записи (действие по умолчанию)"))
+  
 
       
