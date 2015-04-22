@@ -258,16 +258,34 @@
     (if (and (> (fourth today) 23) (> (fifth today) 50))
 	(format t "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним~%"))
     (load-todo (date-to-string today))
-    (select-action ())
+    (select-action (today))
     (format t "todo загружен~%")))
 
-(defun select-action ()
+(defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
   (format t "Выбор действия :)
 1 - Добавление новой записи в текущий todo
 2 - Просмотр загруженного todo
 3 - Изменение статуса записи
-4 - Сохранение записи (действие по умолчанию)"))
+4 - Сохранение записи (действие по умолчанию)~%")
+  (let ((ans (parse-integer (read-input ">"))))
+    (cond
+      ((= 1 ans)
+       (add-new-do (read-input "Заголовок")))
+      ((= 2 ans)
+       (show-todo))
+      ((= 3 ans)
+       (change-status-todo))
+      (t (write-new-todo (date-to-string today))))))
+       
+(defun show-todo ()
+  ;; Вывод списка с применением фильтра при необходимости
+  (format t "По умолчанию выводится список целиком.
+Для фильтрации записей введите:
+1 - Только невыполненные
+2 - Тольуо выполненные")
+  (let ((ans (parse-integer (read-input ">")))))
+    
   
 
       
