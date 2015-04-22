@@ -232,7 +232,7 @@
 (defun user-interface ()
   ;; Основной CLI-интерфейс
   (format t "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo~%")
-  (let (ans (parse-integer (read-input ">")))
+  (let (ans (or (parse-integer (read-input ">") :junk-allowed t) 0))
     (cond 
       ((= 1 ans))
       ((= 2 ans))
@@ -244,7 +244,7 @@
   (format t "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
 введите 2, чтобы открыть todo по заданной дате")
-  (let ((ans (parse-integer (read-input ">"))))
+  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (cond
       ((= 1 ans)
        (load-tomorrow))
@@ -268,7 +268,7 @@
 2 - Просмотр загруженного todo
 3 - Изменение статуса записи
 4 - Сохранение записи (действие по умолчанию)~%")
-  (let ((ans (parse-integer (read-input ">"))))
+  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (cond
       ((= 1 ans)
        (add-new-do (read-input "Заголовок")))
@@ -284,7 +284,7 @@
 Для фильтрации записей введите:
 1 - Только невыполненные
 2 - Только выполненные~%~%")
-  (let ((ans (parse-integer (read-input ">"))))
+  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (cond
       ((= ans 1)
        (print-list (show-all-entries *today* 2)))
