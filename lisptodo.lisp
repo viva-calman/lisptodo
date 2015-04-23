@@ -231,7 +231,7 @@
 ;;
 (defun user-interface ()
   ;; Основной CLI-интерфейс
-  (format t "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo~%")
+  (show-message "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo")
   (let (ans (or (parse-integer (read-input ">") :junk-allowed t) 0))
     (format t "~%")
     (cond 
@@ -242,9 +242,9 @@
 	
 (defun open-todo ()
   ;; Функция предоставляющая интерфейс для выбора действия с существующими файлами
-  (format t "По умолчанию загрузится сегодняшний todo
+  (show-message "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
-введите 2, чтобы открыть todo по заданной дате~%")
+введите 2, чтобы открыть todo по заданной дате")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (format t "~%")
     (cond
@@ -258,18 +258,18 @@
   ;; Загрузка сегодняшнего todo
   (let ((today (get-current-date 0)))
     (if (and (> (fourth today) 23) (> (fifth today) 50))
-	(format t "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним~%"))
+	(show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
     (load-todo (date-to-string today))
     (select-action (today))
     (format t "todo загружен~%")))
 
 (defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
-  (format t "Выбор действия :)
+  (show-message "Выбор действия :)
 1 - Добавление новой записи в текущий todo
 2 - Просмотр загруженного todo
 3 - Изменение статуса записи
-4 - Сохранение записи (действие по умолчанию)~%")
+4 - Сохранение записи (действие по умолчанию)")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (format t "~%")
     (cond
@@ -283,10 +283,10 @@
        
 (defun show-todo ()
   ;; Вывод списка с применением фильтра при необходимости
-  (format t "По умолчанию выводится список целиком.
+  (show-message "По умолчанию выводится список целиком.
 Для фильтрации записей введите:
 1 - Только невыполненные
-2 - Только выполненные~%")
+2 - Только выполненные")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
     (format t "~%")
     (cond
@@ -298,14 +298,20 @@
 
 (defun change-status-todo ()
   ;; Изменение статуса записи
-  (format t "Для изменения статуса записи, введите ее номер из первой колонки~%")
+  (show-message "Для изменения статуса записи, введите ее номер из первой колонки")
   (print-list (show-all-entries *today* 0))
   (let ((ans (or (parse-integer (read-input "~%>") :junk-allowed t) 0)))
     (if (ans)
 	(change-status (select-entry-by-id *today* ans) (input-status))
 	(format t "Нет такой записи"))))
 
+(defun show-message (mess)
+  ;; Вывод сообщения
+  (format t "~a~%" mess))
 
+(defun input-status ()
+  ;; Ввод статуса
+  (format t
     
   
 
