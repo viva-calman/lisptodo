@@ -295,6 +295,17 @@
       ((= ans 2)
        (print-list (show-all-entries *today* 1)))
       (t (print-list (show-all-entries *today* 0))))))
+
+(defun change-status-todo ()
+  ;; Изменение статуса записи
+  (format t "Для изменения статуса записи, введите ее номер из первой колонки~%")
+  (print-list (show-all-entries *today* 0))
+  (let ((ans (or (parse-integer (read-input "~%>") :junk-allowed t) 0)))
+    (if (ans)
+	(change-status (select-entry-by-id *today* ans) (input-status))
+	(format t "Нет такой записи"))))
+
+
     
   
 
