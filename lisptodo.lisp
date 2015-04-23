@@ -311,7 +311,23 @@
 
 (defun input-status ()
   ;; Ввод статуса
-  (format t
+  (show-message "Для того, чтобы пометить задачу выполненной, введите '1'
+Для того, чтобы удалить запись, введите '2'
+Для отмены - введите любое другое значение")
+  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+    (cond 
+      ((= ans 1)
+       (return-from input-status 1))
+      ((= ans 2)
+       (return-from input-status 2))
+      (t (return-from input-status 0)))))
+
+
+
+;;;
+;;; Макросы (на будущее)
+;;;
+
     
   
 
