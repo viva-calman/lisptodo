@@ -233,6 +233,7 @@
   ;; Основной CLI-интерфейс
   (format t "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo~%")
   (let (ans (or (parse-integer (read-input ">") :junk-allowed t) 0))
+    (format t "~%")
     (cond 
       ((= 1 ans))
       ((= 2 ans))
@@ -243,8 +244,9 @@
   ;; Функция предоставляющая интерфейс для выбора действия с существующими файлами
   (format t "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
-введите 2, чтобы открыть todo по заданной дате")
+введите 2, чтобы открыть todo по заданной дате~%")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+    (format t "~%")
     (cond
       ((= 1 ans)
        (load-tomorrow))
@@ -269,6 +271,7 @@
 3 - Изменение статуса записи
 4 - Сохранение записи (действие по умолчанию)~%")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+    (format t "~%")
     (cond
       ((= 1 ans)
        (add-new-do (read-input "Заголовок")))
@@ -283,8 +286,9 @@
   (format t "По умолчанию выводится список целиком.
 Для фильтрации записей введите:
 1 - Только невыполненные
-2 - Только выполненные~%~%")
+2 - Только выполненные~%")
   (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+    (format t "~%")
     (cond
       ((= ans 1)
        (print-list (show-all-entries *today* 2)))
