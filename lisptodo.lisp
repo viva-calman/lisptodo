@@ -232,7 +232,7 @@
 (defun user-interface ()
   ;; Основной CLI-интерфейс
   (show-message "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo")
-  (let (ans (or (parse-integer (read-input ">") :junk-allowed t) 0))
+  (answer-digit ">"
     (format t "~%")
     (cond 
       ((= 1 ans))
@@ -245,7 +245,7 @@
   (show-message "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
 введите 2, чтобы открыть todo по заданной дате")
-  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+  (answer-digit ">"
     (format t "~%")
     (cond
       ((= 1 ans)
@@ -260,7 +260,7 @@
     (if (and (> (fourth today) 23) (> (fifth today) 50))
 	(show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
     (load-todo (date-to-string today))
-    (select-action (today))
+    (select-action today)
     (format t "todo загружен~%")))
 
 (defun select-action (today)
@@ -270,11 +270,11 @@
 2 - Просмотр загруженного todo
 3 - Изменение статуса записи
 4 - Сохранение записи (действие по умолчанию)")
-  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+  (answer-digit ">"
     (format t "~%")
     (cond
       ((= 1 ans)
-       (add-new-do (read-input "Заголовок")))
+       (add-new-do *today* (read-input "Заголовок")))
       ((= 2 ans)
        (show-todo))
       ((= 3 ans)
@@ -287,7 +287,7 @@
 Для фильтрации записей введите:
 1 - Только невыполненные
 2 - Только выполненные")
-  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+  (answer-digit ">"
     (format t "~%")
     (cond
       ((= ans 1)
@@ -300,7 +300,7 @@
   ;; Изменение статуса записи
   (show-message "Для изменения статуса записи, введите ее номер из первой колонки")
   (print-list (show-all-entries *today* 0))
-  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+  (answer-digit ">"
     (if ans
 	(change-status (getf (select-entry-by-id *today* ans) :obj) (input-status))
 	(format t "Нет такой записи"))))
@@ -314,7 +314,7 @@
   (show-message "Для того, чтобы пометить задачу выполненной, введите '1'
 Для того, чтобы удалить запись, введите '2'
 Для отмены - введите любое другое значение")
-  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+  (answer-digit ">" 
     (cond 
       ((= ans 1)
        (return-from input-status 1))
@@ -328,7 +328,9 @@
 ;;; Макросы (на будущее)
 ;;;
 
-    
+(defmacro answer-digit (prompt &rest body)
+  `(let ((ans (or (parse-integer (read-input ,prompt) :junk-allowed t) 0)))
+     ,@body))
   
 
       
