@@ -300,9 +300,9 @@
   ;; Изменение статуса записи
   (show-message "Для изменения статуса записи, введите ее номер из первой колонки")
   (print-list (show-all-entries *today* 0))
-  (let ((ans (or (parse-integer (read-input "~%>") :junk-allowed t) 0)))
-    (if (ans)
-	(change-status (select-entry-by-id *today* ans) (input-status))
+  (let ((ans (or (parse-integer (read-input ">") :junk-allowed t) 0)))
+    (if ans
+	(change-status (getf (select-entry-by-id *today* ans) :obj) (input-status))
 	(format t "Нет такой записи"))))
 
 (defun show-message (mess)
