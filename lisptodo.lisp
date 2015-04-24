@@ -204,9 +204,12 @@
 
 (defun load-todo (filename)
   ;; Загрузка записи
-  (with-open-file (in filename)
-    (with-standard-io-syntax
-      (setf *today* (serialize-today (read in))))))
+  (restart-case
+      (progn 
+	(with-open-file (in filename)
+	  (with-standard-io-syntax
+	    (setf *today* (serialize-today (read in))))))
+    (file-error (value) value)))
 
 (defun parce-todo (todo)
   ;; Разбивка todo
@@ -245,6 +248,7 @@
   (show-message "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
 введите 2, чтобы открыть todo по заданной дате")
+  (handler-bind ((
   (answer-digit ">"
     (format t "~%")
     (cond
