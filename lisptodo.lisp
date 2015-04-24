@@ -345,12 +345,23 @@
 
 
 ;;;
-;;; Макросы (на будущее)
+;;; Макросы и вспомогательные функции для них
 ;;;
 
 (defmacro answer-digit (prompt &rest body)
-  `(let ((ans (or (parse-integer (read-input ,prompt) :junk-allowed t) 0)))
+  ;; Макрос, генерирующий запрос ввода
+  `(let ((,(gensym) (or (parse-integer (read-input ,prompt) :junk-allowed t) 0)))
      ,@body))
   
+(defmacro dialog-gen (inans options)
+  ;; Макрос, конструирующий обработчик ответа пользователя
+  (let ((ans-var (gensym))
+	(ans-act options))
+    `(let ((,ans-var ,inans )) (cond ,@(make-cond ans-var ans-act)))))
+
+(defun make-cond (var bod)
+  ;; Вспомогательная функция, генерирующая COND-выражение
+  (loop for i in bod collect (list (list '= var (first i)) (second i))))
+
 
       
