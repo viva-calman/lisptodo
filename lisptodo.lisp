@@ -209,7 +209,8 @@
 	(with-open-file (in filename)
 	  (with-standard-io-syntax
 	    (setf *today* (serialize-today (read in))))))
-    (file-error (value) value)))
+    (file-error () (if-not-exist))
+    (create-new (day) (create-new day))))
 
 (defun parce-todo (todo)
   ;; Разбивка todo
@@ -228,6 +229,18 @@
 							:id (first (second i)) 
 							:title (second (second i)) 
 							:status (third (second i))))))
+(defun if-not-exist ()
+  ;; Функция обработки ошибки в случае несуществующего файла
+  (show-message "Указанный файл не существует. Введите верное имя файла")
+  (open-todo))
+  
+(defun create-new (day)
+  ;; Создание нового файла todo, если файл не существовал
+  (with-open-file (out day
+		       :direction :output
+		       :if-exists :supersede)
+    (with-standard-io-syntax
+	(print (write-today (make-instance 'todolist)) out ))))
 
 ;;
 ;; Функции пользовательского интерфейса
@@ -248,24 +261,27 @@
   (show-message "По умолчанию загрузится сегодняшний todo
 введите 1, для того, чтобы открыть todo на завтра
 введите 2, чтобы открыть todo по заданной дате")
-  (handler-bind ((
-  (answer-digit ">"
-    (format t "~%")
-    (cond
-      ((= 1 ans)
-       (load-tomorrow))
-      ((= 2 ans)
-       (load-date))
-      (t (load-today))))))
+  (handler-bind ((sb-int:simple-file-error #'(lambda (c)
+				    (invoke-restart 'file-error))))
+    (answer-digit ">"
+		  (format t "~%")
+		  (cond
+		    ((= 1 ans)
+		     (load-tomorrow))
+		    ((= 2 ans)
+		     (load-date))
+		    (t (load-today))))))
        
 (defun load-today ()
   ;; Загрузка сегодняшнего todo
   (let ((today (get-current-date 0)))
-    (if (and (> (fourth today) 23) (> (fifth today) 50))
-	(show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
-    (load-todo (date-to-string today))
-    (select-action today)
-    (format t "todo загружен~%")))
+    (handler-bind ((sb-int:simple-file-error #'(lambda (c)
+					       (invoke-restart 'create-new (date-to-string today)))))
+      (if (and (> (fourth today) 23) (> (fifth today) 50))
+	  (show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
+      (load-todo (date-to-string today))
+      (select-action today)
+      (format t "todo загружен~%"))))
 
 (defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
