@@ -51,12 +51,9 @@
   ;; Добавление новой записи
   (:documentation "Добавление новой записи"))
 
-
 (defgeneric update-current-id (todolist)
   ;; Обновление текущего номера записи в файле
   (:documentation "Обновление текущего id записи, для поддержания актуальности данных в объекте")
-			       
-
 
 (defgeneric show-todolist (todolist
 			   mode)
@@ -78,7 +75,7 @@
 (defgeneric show-all-entries (todolist
 			      mode)
   ;; Вывод всех записей списка
-  (:documentation "Вывод всех записей списка, в разных режимах")
+  (:documentation "Вывод всех записей списка, в разных режимах"))
 
 (defgeneric select-entry-by-id (todolist
 				id)
@@ -320,7 +317,7 @@
   ;; Изменение статуса записи
   (show-message "Для изменения статуса записи, введите ее номер из первой колонки")
   (print-list (show-all-entries *today* 0))
-  (answer-digit ">"
+  (let ((ans (answer-input ">")))
     (if ans
 	(change-status (getf (select-entry-by-id *today* ans) :obj) (input-status))
 	(format t "Нет такой записи"))))
@@ -329,19 +326,19 @@
   ;; Вывод сообщения
   (format t "~a~%" mess))
 
+(defun answer-input (prompt)
+  ;; Ввод ответа и проверка его приемлимости
+  (or (parse-integer (read-input prompt) :junk-allowed t) 0))
+
 (defun input-status ()
   ;; Ввод статуса
   (show-message "Для того, чтобы пометить задачу выполненной, введите '1'
 Для того, чтобы удалить запись, введите '2'
 Для отмены - введите любое другое значение")
-  (answer-digit ">" 
-    (cond 
-      ((= ans 1)
-       (return-from input-status 1))
-      ((= ans 2)
-       (return-from input-status 2))
-      (t (return-from input-status 0)))))
-
+  (dialog-gen (answer-input ">")
+	      ((1 (return-from input-status 1))
+	       (2 (return-from input-status 2)))
+	       (return-from input-status 0)))
 
 
 ;;;
@@ -353,15 +350,19 @@
   `(let ((,(gensym) (or (parse-integer (read-input ,prompt) :junk-allowed t) 0)))
      ,@body))
   
-(defmacro dialog-gen (inans options)
-  ;; Макрос, конструирующий обработчик ответа пользователя
+(defmacro dialog-gen (inans options default)
+  ;; Макрос, конструирующи[Bй обработчик ответа пользователя
   (let ((ans-var (gensym))
-	(ans-act options))
-    `(let ((,ans-var ,inans )) (cond ,@(make-cond ans-var ans-act)))))
+	(ans-act options)
+	(ans-def default))
+    `(let ((,ans-var ,inans )) (cond ,@(make-cond ans-var ans-act) ,@(make-default-cond ans-def)))))
 
 (defun make-cond (var bod)
   ;; Вспомогательная функция, генерирующая COND-выражение
   (loop for i in bod collect (list (list '= var (first i)) (second i))))
 
+(defun make-default-cond (default)
+  ;; Вспомогательная функция, генерирует вариант по умолчанию для COND
+  (list (list t default)))
 
       
