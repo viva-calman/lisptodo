@@ -287,16 +287,11 @@
 2 - Просмотр загруженного todo
 3 - Изменение статуса записи
 4 - Сохранение записи (действие по умолчанию)")
-  (answer-digit ">"
-    (format t "~%")
-    (cond
-      ((= 1 ans)
-       (add-new-do *today* (read-input "Заголовок")))
-      ((= 2 ans)
-       (show-todo))
-      ((= 3 ans)
-       (change-status-todo))
-      (t (write-new-todo (date-to-string today))))))
+  (dialog-gen (answer-input ">")
+	      ((1 (add-new-do *today* (read-input "Заголовок")))
+	       (2 (show-todo))
+	       (3 (change-status-todo)))
+	      (write-new-todo (date-to-string today))))
        
 (defun show-todo ()
   ;; Вывод списка с применением фильтра при необходимости
@@ -304,14 +299,10 @@
 Для фильтрации записей введите:
 1 - Только невыполненные
 2 - Только выполненные")
-  (answer-digit ">"
-    (format t "~%")
-    (cond
-      ((= ans 1)
-       (print-list (show-all-entries *today* 2)))
-      ((= ans 2)
-       (print-list (show-all-entries *today* 1)))
-      (t (print-list (show-all-entries *today* 0))))))
+  (dialog-gen (answer-input ">")
+	      ((1 (print-list (show-all-entries *today* 2)))
+	       (2 (print-list (show-all-entries *today* 1))))
+	      (print-list (show-all-entries *today* 0))))
 
 (defun change-status-todo ()
   ;; Изменение статуса записи
