@@ -168,7 +168,15 @@
 
 (defun print-list (todo-list)
   ;; Отображение списка
-  (format t "~{~{~a:~10t~a~t~a~%~}~}~%" todo-list))
+  (format t "~&Номер~6tЗаголовок~35TСтатус~%")
+  (loop for i in todo-list do (progn (format t "~a~6t~a~35t" (first i) (second i))
+				     (cond
+				       ((= (third i) 0)
+					(format t "Не выполнено [~a]~%" (third i)))
+				       ((= (third i) 1)
+					(format t "Выполнено [~a]~%" (third i)))))))
+					
+						
 
 (defun date-select ()
   ;; Принимает пользовательский ввод и возвращает список с датой
