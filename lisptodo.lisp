@@ -53,7 +53,7 @@
 
 (defgeneric update-current-id (todolist)
   ;; Обновление текущего номера записи в файле
-  (:documentation "Обновление текущего id записи, для поддержания актуальности данных в объекте")
+  (:documentation "Обновление текущего id записи, для поддержания актуальности данных в объекте"))
 
 (defgeneric show-todolist (todolist
 			   mode)
@@ -260,25 +260,37 @@
 введите 2, чтобы открыть todo по заданной дате")
   (handler-bind ((sb-int:simple-file-error #'(lambda (c)
 				    (invoke-restart 'file-error))))
-    (answer-digit ">"
-		  (format t "~%")
-		  (cond
-		    ((= 1 ans)
-		     (load-tomorrow))
-		    ((= 2 ans)
-		     (load-date))
-		    (t (load-today))))))
+    (dialog-gen (answer-input ">")
+		((1 (load-tomorrow))
+		 (2 (load-date)))
+		(load-today))))
        
 (defun load-today ()
   ;; Загрузка сегодняшнего todo
   (let ((today (get-current-date 0)))
     (handler-bind ((sb-int:simple-file-error #'(lambda (c)
-					       (invoke-restart 'create-new (date-to-string today)))))
+						 (invoke-restart 'create-new (date-to-string today)))))
       (if (and (> (fourth today) 23) (> (fifth today) 50))
 	  (show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
       (load-todo (date-to-string today))
       (select-action today)
       (format t "todo загружен~%"))))
+
+(defun load-tomorrow ()
+  ;; Загрузка завтрашнего todo
+  (format t "Загрузка...")
+  (let ((tomorrow (get-current-date)))
+    (handler-bind ((sb-int:simple-file-error #'(lambda (c)
+						  (invoke-restart 'create-new (date-to-string tomorrow)))))
+      (if (and (> (fourth tomorrow) 23) (> (fifth tomorrow) 50))
+	  (show-message "До конца дня осталось меньше 10 минут. После этого будет создан новый завтрашний todo"))
+      (load-todo (date-to-string tomorrow))
+      (select-action tomorrow)
+      (format t "todo загружен"))))
+
+(defun load-date ()
+  ;; Загрузка конкретного todo
+)
 
 (defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
