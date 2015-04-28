@@ -370,11 +370,6 @@
 ;;; Макросы и вспомогательные функции для них
 ;;;
 
-(defmacro answer-digit (prompt &rest body)
-  ;; Макрос, генерирующий запрос ввода
-  `(let ((,(gensym) (or (parse-integer (read-input ,prompt) :junk-allowed t) 0)))
-     ,@body))
-  
 (defmacro dialog-gen (inans options default)
   ;; Макрос, конструирующи[Bй обработчик ответа пользователя
   (let ((ans-var (gensym))
