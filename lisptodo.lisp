@@ -169,6 +169,7 @@
 (defun print-list (todo-list)
   ;; Отображение списка
   (format t "~&Номер~6tЗаголовок~35TСтатус~%")
+  (format t "___________________________________________________________~%")
   (loop for i in todo-list do (progn (format t "~a~6t~a~35t" (first i) (second i))
 				     (cond
 				       ((= (third i) 0)
@@ -359,10 +360,10 @@
   (show-message "Для того, чтобы пометить задачу выполненной, введите '1'
 Для того, чтобы удалить запись, введите '2'
 Для отмены - введите любое другое значение")
-  (dialog-gen (answer-input ">")
-	      ((1 (return-from input-status 1))
-	       (2 (return-from input-status 2)))
-	       (return-from input-status 0)))
+  (let ((ans (answer-input ">")))
+    (if (or (= 1 ans) (= 2 ans))
+	(return-from input-status ans)
+	(return-from input-status 0))))
 
 
 ;;;
