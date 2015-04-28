@@ -205,7 +205,8 @@
       (progn 
 	(with-open-file (in filename)
 	  (with-standard-io-syntax
-	    (setf *today* (serialize-today (read in))))))
+	    (setf *today* (serialize-today (read in)))
+	    (show-message "todo загружен"))))
     (file-error () (if-not-exist))
     (create-new (day) (create-new day))))
 
@@ -239,7 +240,8 @@
 			 :if-exists :supersede)
       (with-standard-io-syntax
 	(print (write-today new-todo) out)
-	(setf *today* new-todo)))))
+	(setf *today* new-todo)
+	(show-message "Новый файл создан, todo загружен")))))
 	
     
 
@@ -277,7 +279,8 @@
       (if (and (> (fourth today) 23) (> (fifth today) 50))
 	  (show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
       (load-todo (date-to-string today))
-      (select-action today))))
+      (select-action today)
+      (write-new-todo (date-to-string today)))))
 
 (defun load-tomorrow ()
   ;; Загрузка завтрашнего todo
@@ -288,7 +291,8 @@
       (if (and (> (fourth tomorrow) 23) (> (fifth tomorrow) 50))
 	  (show-message "До конца дня осталось меньше 10 минут. После этого будет создан новый завтрашний todo"))
       (load-todo (date-to-string tomorrow))
-      (select-action tomorrow))))
+      (select-action tomorrow)
+      (write-new-todo (date-to-string tomorrow)))))
 
 (defun load-date ()
   ;; Загрузка конкретного todo
@@ -296,7 +300,10 @@
     (handler-bind ((sb-int:simple-file-error #'(lambda (c)
 						 (invoke-restart 'create-new (date-to-string date)))))
       (load-todo (date-to-string date))
-      (select-action date))))
+      (select-action date)
+      (write-new-todo (date-to-string date)))))
+  
+
 
 (defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
