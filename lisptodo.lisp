@@ -233,11 +233,15 @@
   
 (defun create-new (day)
   ;; Создание нового файла todo, если файл не существовал
-  (with-open-file (out day
-		       :direction :output
-		       :if-exists :supersede)
-    (with-standard-io-syntax
-	(print (write-today (make-instance 'todolist)) out ))))
+  (let ((new-todo (make-instance 'todolist)))
+    (with-open-file (out day
+			 :direction :output
+			 :if-exists :supersede)
+      (with-standard-io-syntax
+	(print (write-today new-todo) out)
+	(setf *today* new-todo)))))
+	
+    
 
 ;;
 ;; Функции пользовательского интерфейса
@@ -273,8 +277,7 @@
       (if (and (> (fourth today) 23) (> (fifth today) 50))
 	  (show-message "До конца дня осталось меньше 10 минут. После этого завтрашний todo станет сегодняшним"))
       (load-todo (date-to-string today))
-      (select-action today)
-      (show-message "todo загружен~%"))))
+      (select-action today))))
 
 (defun load-tomorrow ()
   ;; Загрузка завтрашнего todo
@@ -285,8 +288,7 @@
       (if (and (> (fourth tomorrow) 23) (> (fifth tomorrow) 50))
 	  (show-message "До конца дня осталось меньше 10 минут. После этого будет создан новый завтрашний todo"))
       (load-todo (date-to-string tomorrow))
-      (select-action tomorrow)
-      (show-message "todo загружен"))))
+      (select-action tomorrow))))
 
 (defun load-date ()
   ;; Загрузка конкретного todo
@@ -294,8 +296,7 @@
     (handler-bind ((sb-int:simple-file-error #'(lambda (c)
 						 (invoke-restart 'create-new (date-to-string date)))))
       (load-todo (date-to-string date))
-      (select-action date)
-      (show-message "todo загружен"))))
+      (select-action date))))
 
 (defun select-action (today)
   ;; Выбор действия, производимого с загруженным todo
