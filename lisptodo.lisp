@@ -186,12 +186,17 @@
 
 (defun date-to-string (date)
   ;; Принимает список и возвращает строку
-  (let (month)
+  (let ((month)
+	(day))
+    (if (< (parse-integer (first date)) 10)
+	(setf day (concatenate 'string (write-to-string 0) (second date)))
+	(setf day (second date)))
     (if (< (parse-integer (second date)) 10)
 	(setf month (concatenate 'string (write-to-string 0) (second date)))
 	(setf month (second date)))
+    
     (concatenate 'string 
-		 (third date) "-" month "-" (first date))))
+		 (third date) "-" month "-" day)))
 
 (defun read-input (prompt)
   ;; Чтение пользовательского ввода
