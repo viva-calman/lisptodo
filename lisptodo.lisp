@@ -258,13 +258,13 @@
 ;;
 (defun user-interface ()
   ;; Основной CLI-интерфейс
-  (show-message "Выберите действие:~%1) Добавить новую запись в завтрашний todo~%2) Открыть todo")
-  (answer-digit ">"
-    (format t "~%")
-    (cond 
-      ((= 1 ans))
-      ((= 2 ans))
-)))
+  (do ((ans T))
+      ((eq ans nil))
+    (show-message "*** Welcome to LispToDo ***")
+    (show-message "Выберите действие:")
+    (open-todo)
+    (setf ans (y-or-n-p "Продолжить?"))))
+
 
 	
 (defun open-todo ()
@@ -363,6 +363,7 @@
     (if (or (= 1 ans) (= 2 ans))
 	(return-from input-status ans)
 	(return-from input-status 0))))
+
 
 
 ;;;
