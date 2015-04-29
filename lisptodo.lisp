@@ -258,10 +258,10 @@
 ;;
 (defun user-interface ()
   ;; Основной CLI-интерфейс
+  (show-message "*** Welcome to LispToDo ***")
+  (show-message "Выберите действие:")
   (do ((ans T))
       ((eq ans nil))
-    (show-message "*** Welcome to LispToDo ***")
-    (show-message "Выберите действие:")
     (open-todo)
     (setf ans (y-or-n-p "Продолжить?"))))
 
