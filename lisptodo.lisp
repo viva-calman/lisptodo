@@ -10,7 +10,6 @@
 ;;; Переменные
 ;;;
 (defparameter *today* nil)
-(defparameter *tomorrow* (date-to-string (get-current-date)))
 (defparameter *filename* nil)
 
 
